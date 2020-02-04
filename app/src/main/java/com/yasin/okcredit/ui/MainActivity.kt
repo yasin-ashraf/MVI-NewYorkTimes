@@ -1,7 +1,8 @@
-package com.yasin.okcredit
+package com.yasin.okcredit.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.yasin.okcredit.R
 
 class MainActivity : AppCompatActivity() {
 
