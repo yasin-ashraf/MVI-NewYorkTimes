@@ -21,7 +21,8 @@ buildscript {
             'dagger'            : '2.25.4',
             'material'          : '1.2.0-alpha03',
             'logging_interceptor': '3.10.0',
-            'retrofit'          : '2.6.0'
+            'retrofit'          : '2.6.0',
+            'navigation'        : '2.2.0'
     ]
     repositories {
         google()
