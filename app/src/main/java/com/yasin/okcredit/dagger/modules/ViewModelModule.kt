@@ -2,7 +2,7 @@ package com.yasin.okcredit.dagger.modules
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.yasin.okcredit.ui.HomeViewModel
+import com.yasin.okcredit.ui.home.HomeViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

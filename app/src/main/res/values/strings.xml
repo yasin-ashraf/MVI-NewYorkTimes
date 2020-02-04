@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">OkCredit</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_science">Science</string>
+    <string name="menu_movies">Movies</string>
+    <string name="menu_sports">Sports</string>
 </resources>

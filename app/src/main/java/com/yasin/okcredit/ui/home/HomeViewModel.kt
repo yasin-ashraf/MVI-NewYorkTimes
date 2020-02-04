@@ -1,4 +1,4 @@
-package com.yasin.okcredit.ui
+package com.yasin.okcredit.ui.home
 
 import androidx.lifecycle.ViewModel
 import javax.inject.Inject
