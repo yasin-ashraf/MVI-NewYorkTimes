@@ -5,6 +5,7 @@ import com.yasin.okcredit.dagger.modules.ContextModule
 import com.yasin.okcredit.dagger.modules.DatabaseModule
 import com.yasin.okcredit.dagger.modules.ViewModelModule
 import com.yasin.okcredit.dagger.scope.ApplicationScope
+import com.yasin.okcredit.ui.home.HomeFragment
 import dagger.Component
 
 /**
@@ -13,6 +14,7 @@ import dagger.Component
 @ApplicationScope
 @Component(modules = [ContextModule::class, ApplicationModule::class, DatabaseModule::class, ViewModelModule::class])
 interface MainComponent {
+    fun injectHome(homeFragment: HomeFragment)
 
 
 }
