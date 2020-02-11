@@ -5,7 +5,7 @@ import androidx.room.Room
 import com.yasin.okcredit.DATABASE_NAME
 import com.yasin.okcredit.dagger.scope.ApplicationScope
 import com.yasin.okcredit.data.NewsDatabase
-import com.yasin.okcredit.data.dao.NewsDao
+import com.yasin.okcredit.data.dao.HomeNewsDao
 import dagger.Module
 import dagger.Provides
 
@@ -24,8 +24,8 @@ class DatabaseModule {
 
     @Provides
     @ApplicationScope
-    fun provideNewsDao(handzapDatabase: NewsDatabase) : NewsDao {
-        return handzapDatabase.newsDao()
+    fun provideNewsDao(handzapDatabase: NewsDatabase) : HomeNewsDao {
+        return handzapDatabase.homeNewsDao()
     }
 
 }

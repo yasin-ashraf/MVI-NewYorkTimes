@@ -9,5 +9,11 @@ import androidx.room.PrimaryKey
 @Entity
 data class HomeNews(
     @PrimaryKey
-    val id : String
+    val id : String,
+    val title : String,
+    val author : String,
+    val thumbnail : String,
+    val abstract : String,
+    val coverImage : String,
+    val articleLink : String
 )

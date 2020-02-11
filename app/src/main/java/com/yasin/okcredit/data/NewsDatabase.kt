@@ -2,7 +2,7 @@ package com.yasin.okcredit.data
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.yasin.okcredit.data.dao.NewsDao
+import com.yasin.okcredit.data.dao.HomeNewsDao
 import com.yasin.okcredit.data.entity.HomeNews
 
 /**
@@ -11,5 +11,5 @@ import com.yasin.okcredit.data.entity.HomeNews
 @Database(entities = [HomeNews::class],version = 1,exportSchema = false)
 abstract class NewsDatabase : RoomDatabase(){
 
-    abstract fun newsDao() : NewsDao
+    abstract fun homeNewsDao() : HomeNewsDao
 }
