@@ -4,10 +4,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 /**
- * Created by Yasin on 4/2/20.
+ * Created by Yasin on 10/2/20.
  */
 @Entity
-data class News(
+data class ScienceNews(
     @PrimaryKey
     val id : String
 )
