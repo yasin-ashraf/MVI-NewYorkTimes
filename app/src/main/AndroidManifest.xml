@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.yasin.okcredit">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:name=".OkCredit"
         android:allowBackup="true"

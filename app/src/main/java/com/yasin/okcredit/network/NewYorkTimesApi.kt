@@ -10,6 +10,6 @@ import retrofit2.http.Query
  */
 interface NewYorkTimesApi {
 
-    @GET("/home.json")
+    @GET("home.json")
     fun fetchHomeNews(@Query("api-key") apiKey : String) : Single<HomeNewsResponse>
 }

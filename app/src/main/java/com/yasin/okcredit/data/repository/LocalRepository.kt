@@ -4,6 +4,7 @@ import com.yasin.okcredit.dagger.scope.ApplicationScope
 import com.yasin.okcredit.data.dao.HomeNewsDao
 import com.yasin.okcredit.data.entity.HomeNews
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import javax.inject.Inject
 
 /**
@@ -12,7 +13,7 @@ import javax.inject.Inject
 @ApplicationScope
 class LocalRepository @Inject constructor(private val homeNewsDao: HomeNewsDao) {
 
-    fun getHomeNews(): Flowable<List<HomeNews>> {
+    fun getHomeNews(): Observable<List<HomeNews>> {
         return homeNewsDao.getAllHomeNews()
     }
 

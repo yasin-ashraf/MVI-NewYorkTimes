@@ -7,6 +7,7 @@ import com.yasin.okcredit.data.entity.HomeNews
 import com.yasin.okcredit.data.repository.LocalRepository
 import com.yasin.okcredit.data.repository.RemoteRepository
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -22,7 +23,7 @@ class HomeRepository @Inject constructor(
 
     private lateinit var disposable: Disposable
 
-    fun getHomeNews(): Flowable<List<HomeNews>> {
+    fun getHomeNews(): Observable<List<HomeNews>> {
         refreshProducts()
         return localRepository.getHomeNews()
     }
@@ -57,7 +58,7 @@ class HomeRepository @Inject constructor(
         if (it.multimedia.isNullOrEmpty()) return ""
         return it.multimedia.find {
             it.format == THUMBNAIL
-        }?.format ?: ""
+        }?.url ?: ""
 
     }
 
@@ -65,7 +66,7 @@ class HomeRepository @Inject constructor(
         if (it.multimedia.isNullOrEmpty()) return ""
         return it.multimedia.find {
             it.format == COVER_PHOTO
-        }?.format ?: ""
+        }?.url ?: ""
     }
 
     fun onCleared() {
