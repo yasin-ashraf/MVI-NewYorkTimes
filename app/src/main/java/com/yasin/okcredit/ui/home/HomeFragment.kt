@@ -30,7 +30,7 @@ class HomeFragment : Fragment() {
     private lateinit var uiDisposable : Disposable
     private lateinit var disposable: Disposable
     private val newsAdapter : NewsAdapter by lazy { NewsAdapter() }
-    private val swipeRefesh : PublishSubject<ScreenReLoadEvent> = PublishSubject.create()
+    private val swipeRefesh : PublishSubject<ScreenLoadEvent> = PublishSubject.create()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         OkCredit.getApp(requireContext()).mainComponent.injectHome(this)
@@ -67,7 +67,7 @@ class HomeFragment : Fragment() {
     private fun init() {
         rv_home.adapter = newsAdapter
         swipe_refresh_home.setOnRefreshListener(onRefreshListener)
-        val screenLoadEvent : Observable<ScreenReLoadEvent> = swipeRefesh
+        val screenLoadEvent : Observable<ScreenLoadEvent> = swipeRefesh
         uiDisposable = screenLoadEvent.subscribe(
             {
                 homeViewModel.processInput(it)
@@ -75,7 +75,7 @@ class HomeFragment : Fragment() {
                 Timber.e(it, "error processing input")
             }
         )
-        swipeRefesh.onNext(ScreenReLoadEvent) // first time
+        swipeRefesh.onNext(ScreenLoadEvent) // first time
     }
 
     private fun renderViewState(it: HomeViewState?) {
@@ -84,7 +84,7 @@ class HomeFragment : Fragment() {
     }
 
     private val onRefreshListener = SwipeRefreshLayout.OnRefreshListener {
-        swipeRefesh.onNext(ScreenReLoadEvent)
+        swipeRefesh.onNext(ScreenLoadEvent)
     }
 
     override fun onDestroyView() {

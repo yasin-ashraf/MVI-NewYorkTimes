@@ -2,8 +2,8 @@ package com.yasin.okcredit.ui.home
 
 import androidx.lifecycle.ViewModel
 import com.yasin.okcredit.network.Lce
-import com.yasin.okcredit.ui.home.HomeViewEvent.ScreenReLoadEvent
-import com.yasin.okcredit.ui.home.HomeViewResult.ScreenReLoadResult
+import com.yasin.okcredit.ui.home.HomeViewEvent.ScreenLoadEvent
+import com.yasin.okcredit.ui.home.HomeViewResult.ScreenLoadResult
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -33,12 +33,12 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
     }
 
     fun processInput(homeViewEvent: HomeViewEvent?) {
-        eventEmitter.onNext(homeViewEvent ?: ScreenReLoadEvent)
+        eventEmitter.onNext(homeViewEvent ?: ScreenLoadEvent)
     }
 
     private fun Observable<HomeViewEvent>.eventToResult(): Observable<Lce<out HomeViewResult>> {
         return publish { o ->
-            o.ofType(ScreenReLoadEvent::class.java).onScreenReLoad()
+            o.ofType(ScreenLoadEvent::class.java).onScreenReLoad()
         }
     }
 
@@ -47,7 +47,7 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
             when (result) {
                 is Lce.Content -> {
                     when (result.packet) {
-                        is ScreenReLoadResult -> {
+                        is ScreenLoadResult -> {
                             vs.copy(isLoading = false, adapterList = result.packet.list)
                         }
                         else -> {
@@ -62,7 +62,7 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
 
                 is Lce.Error -> {
                     when (result.packet) {
-                        is ScreenReLoadResult -> {
+                        is ScreenLoadResult -> {
                             vs.copy(isLoading = false,error = result.packet.error)
                         }
                         else -> {
@@ -75,15 +75,15 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
     }
 
 
-    private fun Observable<ScreenReLoadEvent>.onScreenReLoad(): Observable<Lce<out HomeViewResult>> {
+    private fun Observable<ScreenLoadEvent>.onScreenReLoad(): Observable<Lce<out HomeViewResult>> {
         return switchMap {
             homeRepository.getHomeNews()
                 .subscribeOn(Schedulers.io())
                 .map {
                     if (it.isNullOrEmpty()) {
-                        Lce.Error(ScreenReLoadResult(it,"error fetching news.."))
+                        Lce.Error(ScreenLoadResult(it,"error fetching news.."))
                     } else {
-                        Lce.Content(ScreenReLoadResult(it))
+                        Lce.Content(ScreenLoadResult(it))
                     }
                 }.startWith(Lce.Loading())
         }

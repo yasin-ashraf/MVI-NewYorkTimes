@@ -13,9 +13,9 @@ data class HomeViewState(
 )
 
 sealed class HomeViewEvent {
-    object ScreenReLoadEvent : HomeViewEvent()
+    object ScreenLoadEvent : HomeViewEvent()
 }
 
 sealed class HomeViewResult {
-    data class ScreenReLoadResult(val list: List<HomeNews>,val error: String = "") : HomeViewResult()
+    data class ScreenLoadResult(val list: List<HomeNews>, val error: String = "") : HomeViewResult()
 }
