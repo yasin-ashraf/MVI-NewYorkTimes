@@ -20,4 +20,8 @@ class LocalRepository @Inject constructor(private val homeNewsDao: HomeNewsDao) 
     fun insertHomeNewsItem(news : Array<HomeNews>) {
         homeNewsDao.saveHomeNews(news)
     }
+
+    fun getHomeNewsDetails(id : String) : Observable<HomeNews> {
+       return homeNewsDao.getNewsDetails(id)
+    }
 }

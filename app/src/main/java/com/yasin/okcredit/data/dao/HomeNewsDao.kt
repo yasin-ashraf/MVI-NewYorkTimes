@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import com.yasin.okcredit.GET_ALL_HOME_NEWS_QUERY
+import com.yasin.okcredit.GET_HOME_NEWS_DETAILS_QUERY
 import com.yasin.okcredit.data.entity.HomeNews
 import io.reactivex.Observable
 
@@ -19,4 +20,7 @@ interface HomeNewsDao {
 
     @Query(GET_ALL_HOME_NEWS_QUERY)
     fun getAllHomeNews() : Observable<List<HomeNews>>
+
+    @Query(GET_HOME_NEWS_DETAILS_QUERY)
+    fun getNewsDetails(id : String) : Observable<HomeNews>
 }

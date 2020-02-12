@@ -24,7 +24,7 @@ class HomeRepository @Inject constructor(
     private lateinit var disposable: Disposable
 
     fun getHomeNews(): Observable<List<HomeNews>> {
-        refreshProducts()
+        refreshProducts() //todo : return loading state from here
         return localRepository.getHomeNews()
     }
 

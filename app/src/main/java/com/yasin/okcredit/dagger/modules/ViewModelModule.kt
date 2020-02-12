@@ -2,6 +2,7 @@ package com.yasin.okcredit.dagger.modules
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.yasin.okcredit.ui.details.DetailViewModel
 import com.yasin.okcredit.ui.home.HomeViewModel
 import dagger.Binds
 import dagger.Module
@@ -20,5 +21,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(HomeViewModel::class)
     abstract fun bindHomeViewModel(homeViewModel: HomeViewModel) : ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DetailViewModel::class)
+    abstract fun bindDetailViewModel(detailViewModel: DetailViewModel) : ViewModel
 
 }
