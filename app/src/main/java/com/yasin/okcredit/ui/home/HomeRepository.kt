@@ -70,6 +70,7 @@ class HomeRepository @Inject constructor(
     }
 
     fun onCleared() {
-        disposable.dispose()
+        if(::disposable.isInitialized)
+            disposable.dispose()
     }
 }

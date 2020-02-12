@@ -43,8 +43,8 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
     private fun Observable<HomeViewEvent>.eventToResult(): Observable<Lce<out HomeViewResult>> {
         return publish { o ->
             Observable.merge(
-                o.ofType(ScreenLoadEvent::class.java).onScreenLoad(),
-                o.ofType(LoadNewsEvent::class.java).onLoadNews()
+                o.ofType(LoadNewsEvent::class.java).onLoadNews(),
+                o.ofType(ScreenLoadEvent::class.java).onScreenLoad()
             )
         }
     }

@@ -39,6 +39,7 @@ dependencies {
     //Room
     implementation "androidx.room:room-runtime:${library.room_version}"
     kapt "androidx.room:room-compiler:${library.room_version}"
+    implementation "androidx.room:room-rxjava2:${library.room_version}"
     //network
     implementation "com.squareup.okhttp3:logging-interceptor:${library.logging_interceptor}"
     implementation "com.squareup.retrofit2:retrofit:${library.retrofit}"

@@ -36,6 +36,16 @@ class HomeFragment : Fragment() {
         OkCredit.getApp(requireContext()).mainComponent.injectHome(this)
         super.onCreate(savedInstanceState)
         configureViewModel()
+        observeViewState()
+    }
+
+    private fun observeViewState() {
+        disposable = homeViewModel.viewState
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext { Timber.d("----- onNext VS $it") }
+            .subscribe({
+                renderViewState(it)
+            }) { Timber.e(it, "something went terribly wrong processing view state") }
     }
 
     private fun configureViewModel() {
@@ -70,13 +80,6 @@ class HomeFragment : Fragment() {
                 Timber.e(it, "error processing input")
             }
         )
-
-        disposable = homeViewModel.viewState
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext { Timber.d("----- onNext VS $it") }
-            .subscribe({
-                renderViewState(it)
-            }) { Timber.e(it, "something went terribly wrong processing view state") }
     }
 
     private fun renderViewState(it: HomeViewState?) {
