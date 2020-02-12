@@ -2,13 +2,12 @@ package com.yasin.okcredit.ui.home
 
 import androidx.lifecycle.ViewModel
 import com.yasin.okcredit.network.Lce
-import com.yasin.okcredit.ui.home.HomeViewEvent.*
-import com.yasin.okcredit.ui.home.HomeViewResult.*
+import com.yasin.okcredit.ui.home.HomeViewEvent.ScreenReLoadEvent
+import com.yasin.okcredit.ui.home.HomeViewResult.ScreenReLoadResult
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -22,14 +21,11 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
 
     init {
         eventEmitter
-            .doOnNext { Timber.d("----- event $it") }
             .eventToResult()
-            .doOnNext { Timber.d("----- result $it") }
             .share()
             .also { result ->
                 viewState = result
                     .resultToViewState()
-                    .doOnNext { Timber.d("----- vs $it") }
                     .replay(1)
                     .autoConnect(1) { disposable = it }
             }
@@ -37,15 +33,12 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
     }
 
     fun processInput(homeViewEvent: HomeViewEvent?) {
-        eventEmitter.onNext(homeViewEvent ?: ScreenLoadEvent)
+        eventEmitter.onNext(homeViewEvent ?: ScreenReLoadEvent)
     }
 
     private fun Observable<HomeViewEvent>.eventToResult(): Observable<Lce<out HomeViewResult>> {
         return publish { o ->
-            Observable.merge(
-                o.ofType(LoadNewsEvent::class.java).onLoadNews(),
-                o.ofType(ScreenLoadEvent::class.java).onScreenLoad()
-            )
+            o.ofType(ScreenReLoadEvent::class.java).onScreenReLoad()
         }
     }
 
@@ -54,12 +47,11 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
             when (result) {
                 is Lce.Content -> {
                     when (result.packet) {
-                        is ScreenLoadResult -> {
-                            vs.copy(isLoading = true)
-                        }
-
-                        is LoadNewsResult -> {
+                        is ScreenReLoadResult -> {
                             vs.copy(isLoading = false, adapterList = result.packet.list)
+                        }
+                        else -> {
+                            error("invalid event result!!")
                         }
                     }
                 }
@@ -70,34 +62,30 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
 
                 is Lce.Error -> {
                     when (result.packet) {
-                        is LoadNewsResult -> {
-                            vs.copy(isLoading = false)
+                        is ScreenReLoadResult -> {
+                            vs.copy(isLoading = false,error = result.packet.error)
                         }
-                        else -> throw RuntimeException("Unexpected result LCE state")
+                        else -> {
+                            error("invalid event result!!")
+                        }
                     }
                 }
             }
         }
-            .distinctUntilChanged()
     }
 
 
-    private fun Observable<ScreenLoadEvent>.onScreenLoad(): Observable<Lce<ScreenLoadResult>> {
-        return map { Lce.Content(ScreenLoadResult) }
-    }
-
-    private fun Observable<LoadNewsEvent>.onLoadNews(): Observable<Lce<LoadNewsResult>> {
+    private fun Observable<ScreenReLoadEvent>.onScreenReLoad(): Observable<Lce<out HomeViewResult>> {
         return switchMap {
             homeRepository.getHomeNews()
                 .subscribeOn(Schedulers.io())
                 .map {
                     if (it.isNullOrEmpty()) {
-                        Lce.Error(LoadNewsResult(it))
+                        Lce.Error(ScreenReLoadResult(it,"error fetching news.."))
                     } else {
-                        Lce.Content(LoadNewsResult(it))
+                        Lce.Content(ScreenReLoadResult(it))
                     }
-                }
-                .startWith(Lce.Loading())
+                }.startWith(Lce.Loading())
         }
     }
 

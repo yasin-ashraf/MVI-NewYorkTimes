@@ -30,7 +30,7 @@ class HomeFragment : Fragment() {
     private lateinit var uiDisposable : Disposable
     private lateinit var disposable: Disposable
     private val newsAdapter : NewsAdapter by lazy { NewsAdapter() }
-    private val swipeRefesh : PublishSubject<ScreenLoadEvent> = PublishSubject.create()
+    private val swipeRefesh : PublishSubject<ScreenReLoadEvent> = PublishSubject.create()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         OkCredit.getApp(requireContext()).mainComponent.injectHome(this)
@@ -42,10 +42,9 @@ class HomeFragment : Fragment() {
     private fun observeViewState() {
         disposable = homeViewModel.viewState
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext { Timber.d("----- onNext VS $it") }
             .subscribe({
                 renderViewState(it)
-            }) { Timber.e(it, "something went terribly wrong processing view state") }
+            }, { Timber.e(it, "something went terribly wrong processing view state") })
     }
 
     private fun configureViewModel() {
@@ -68,27 +67,24 @@ class HomeFragment : Fragment() {
     private fun init() {
         rv_home.adapter = newsAdapter
         swipe_refresh_home.setOnRefreshListener(onRefreshListener)
-        val screenLoadEvent : Observable<ScreenLoadEvent> = swipeRefesh
-        val loadNewsEvent : Observable<LoadNewsEvent> = Observable.just(LoadNewsEvent)
-        uiDisposable = Observable.merge(
-            screenLoadEvent,
-            loadNewsEvent
-        ).subscribe(
+        val screenLoadEvent : Observable<ScreenReLoadEvent> = swipeRefesh
+        uiDisposable = screenLoadEvent.subscribe(
             {
                 homeViewModel.processInput(it)
             },{
                 Timber.e(it, "error processing input")
             }
         )
+        swipeRefesh.onNext(ScreenReLoadEvent) // first time
     }
 
     private fun renderViewState(it: HomeViewState?) {
-        swipe_refresh_home.isRefreshing =it?.isLoading ?: false
+        swipe_refresh_home.isRefreshing = it?.isLoading ?: false
         newsAdapter.submitList(it?.adapterList)
     }
 
     private val onRefreshListener = SwipeRefreshLayout.OnRefreshListener {
-        swipeRefesh.onNext(ScreenLoadEvent)
+        swipeRefesh.onNext(ScreenReLoadEvent)
     }
 
     override fun onDestroyView() {

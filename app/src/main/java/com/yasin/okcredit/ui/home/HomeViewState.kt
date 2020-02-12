@@ -7,15 +7,15 @@ import com.yasin.okcredit.data.entity.HomeNews
  */
 data class HomeViewState(
     val isLoading : Boolean = false,
+    val error : String = "",
+    val isEmpty : Boolean = false,
     val adapterList : List<HomeNews> = emptyList()
 )
 
 sealed class HomeViewEvent {
-    object ScreenLoadEvent : HomeViewEvent()
-    object LoadNewsEvent : HomeViewEvent()
+    object ScreenReLoadEvent : HomeViewEvent()
 }
 
 sealed class HomeViewResult {
-    object ScreenLoadResult : HomeViewResult()
-    data class LoadNewsResult(val list: List<HomeNews>) : HomeViewResult()
+    data class ScreenReLoadResult(val list: List<HomeNews>,val error: String = "") : HomeViewResult()
 }
