@@ -1,11 +1,14 @@
 package com.yasin.okcredit.ui.adapter
 
+import android.graphics.*
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.squareup.picasso.Picasso
+import com.squareup.picasso.Transformation
 import com.yasin.okcredit.R
 import com.yasin.okcredit.data.entity.HomeNews
 import com.yasin.okcredit.inflate
+import com.yasin.okcredit.utils.RoundedTransformation
 import kotlinx.android.synthetic.main.list_item.view.*
 
 /**
@@ -23,6 +26,7 @@ class NewsAdapter : ListAdapter<HomeNews, NewsItemViewHolder>(NewsItemDiffCallBa
         holder.itemView.tv_title.text = news.title
         Picasso.get()
             .load(news.thumbnail)
+            .transform(RoundedTransformation(4f))
             .into(holder.itemView.image)
     }
 }

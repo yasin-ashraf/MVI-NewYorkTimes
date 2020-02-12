@@ -80,7 +80,13 @@ class HomeFragment : Fragment() {
 
     private fun renderViewState(it: HomeViewState?) {
         swipe_refresh_home.isRefreshing = it?.isLoading ?: false
-        newsAdapter.submitList(it?.adapterList)
+        if(it?.isEmpty == true){
+            empty_view.visibility = View.VISIBLE
+        }else{
+            empty_view.visibility = View.GONE
+            rv_home.visibility = View.VISIBLE
+            newsAdapter.submitList(it?.adapterList)
+        }
     }
 
     private val onRefreshListener = SwipeRefreshLayout.OnRefreshListener {

@@ -4,4 +4,5 @@
     <string name="menu_science">Science</string>
     <string name="menu_movies">Movies</string>
     <string name="menu_sports">Sports</string>
+    <string name="something_went_wrong_pull_to_refresh">No news?? it\'s weird. Pull to refresh.</string>
 </resources>

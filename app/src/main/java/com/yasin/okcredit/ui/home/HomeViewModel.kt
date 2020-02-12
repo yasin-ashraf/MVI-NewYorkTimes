@@ -38,7 +38,7 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
 
     private fun Observable<HomeViewEvent>.eventToResult(): Observable<Lce<out HomeViewResult>> {
         return publish { o ->
-            o.ofType(ScreenLoadEvent::class.java).onScreenReLoad()
+            o.ofType(ScreenLoadEvent::class.java).onScreenLoad()
         }
     }
 
@@ -48,7 +48,7 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
                 is Lce.Content -> {
                     when (result.packet) {
                         is ScreenLoadResult -> {
-                            vs.copy(isLoading = false, adapterList = result.packet.list)
+                            vs.copy(isLoading = false, isEmpty = false,adapterList = result.packet.list)
                         }
                         else -> {
                             error("invalid event result!!")
@@ -63,7 +63,11 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
                 is Lce.Error -> {
                     when (result.packet) {
                         is ScreenLoadResult -> {
-                            vs.copy(isLoading = false,error = result.packet.error)
+                            if(result.packet.list.isEmpty()){
+                                vs.copy(isLoading = false, isEmpty = true,error = result.packet.error)
+                            }else{
+                                vs.copy(isLoading = false,error = result.packet.error)
+                            }
                         }
                         else -> {
                             error("invalid event result!!")
@@ -75,13 +79,13 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
     }
 
 
-    private fun Observable<ScreenLoadEvent>.onScreenReLoad(): Observable<Lce<out HomeViewResult>> {
+    private fun Observable<ScreenLoadEvent>.onScreenLoad(): Observable<Lce<out HomeViewResult>> {
         return switchMap {
             homeRepository.getHomeNews()
                 .subscribeOn(Schedulers.io())
                 .map {
-                    if (it.isNullOrEmpty()) {
-                        Lce.Error(ScreenLoadResult(it,"error fetching news.."))
+                    if (it.isEmpty()) {
+                        Lce.Error(ScreenLoadResult(it,"empty news.."))
                     } else {
                         Lce.Content(ScreenLoadResult(it))
                     }
