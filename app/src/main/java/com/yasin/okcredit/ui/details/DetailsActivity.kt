@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
@@ -43,8 +44,27 @@ class DetailsActivity : AppCompatActivity() {
         OkCredit.getApp(this).mainComponent.injectDetails(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
+        applyWindowInsets()
         configureViewModel()
         attachViewStateObserver()
+    }
+
+    private fun applyWindowInsets() {
+        coordinator.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+
+        coordinator.setOnApplyWindowInsetsListener { v, insets ->
+
+            val lpCloseButton = back_button?.layoutParams as ViewGroup.MarginLayoutParams
+            lpCloseButton.topMargin += insets.systemWindowInsetTop
+            back_button.layoutParams = lpCloseButton
+
+            // clear this listener so insets aren't re-applied
+            coordinator.setOnApplyWindowInsetsListener(null)
+            insets.consumeSystemWindowInsets()
+        }
+
     }
 
     override fun onResume() {

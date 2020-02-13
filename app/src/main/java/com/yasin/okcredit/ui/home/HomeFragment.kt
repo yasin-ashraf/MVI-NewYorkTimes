@@ -61,7 +61,22 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        insetWindow()
         init()
+    }
+
+    private fun insetWindow() {
+        cl.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+
+        cl.setOnApplyWindowInsetsListener { v, insets ->
+
+            rv_home.setPadding(0,insets.systemWindowInsetTop,0,0)
+
+            // clear this listener so insets aren't re-applied
+            cl.setOnApplyWindowInsetsListener(null)
+            insets.consumeSystemWindowInsets()
+        }
     }
 
     private fun init() {
