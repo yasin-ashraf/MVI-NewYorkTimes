@@ -15,5 +15,6 @@ data class HomeNews(
     var thumbnail : String? = "",
     var abstract : String? = "",
     var coverImage : String? = "",
-    var articleLink : String? = ""
+    var articleLink : String? = "",
+    var publishedDate : String? = ""
 )

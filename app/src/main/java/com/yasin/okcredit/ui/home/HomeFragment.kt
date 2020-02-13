@@ -39,16 +39,16 @@ class HomeFragment : Fragment() {
         observeViewState()
     }
 
+    private fun configureViewModel() {
+        homeViewModel = ViewModelProvider(requireActivity(),viewmodelFactory).get(HomeViewModel::class.java)
+    }
+
     private fun observeViewState() {
         disposable = homeViewModel.viewState
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 renderViewState(it)
             }, { Timber.e(it, "something went terribly wrong processing view state") })
-    }
-
-    private fun configureViewModel() {
-        homeViewModel = ViewModelProvider(requireActivity(),viewmodelFactory).get(HomeViewModel::class.java)
     }
 
     override fun onCreateView(

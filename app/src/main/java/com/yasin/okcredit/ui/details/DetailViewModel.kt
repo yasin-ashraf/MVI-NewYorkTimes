@@ -2,6 +2,7 @@ package com.yasin.okcredit.ui.details
 
 import androidx.lifecycle.ViewModel
 import com.yasin.okcredit.network.Lce
+import com.yasin.okcredit.ui.details.DetailViewEffect.*
 import com.yasin.okcredit.ui.details.DetailViewEvent.*
 import com.yasin.okcredit.ui.details.DetailViewResult.*
 import io.reactivex.Observable
@@ -16,6 +17,7 @@ class DetailViewModel @Inject constructor(private val detailRepository: DetailRe
 
     private val eventEmitter : PublishSubject<DetailViewEvent> = PublishSubject.create()
     val viewState :Observable<DetailViewState>
+    val viewEffects: Observable<DetailViewEffect>
     private lateinit var disposable : Disposable
 
     init {
@@ -27,11 +29,37 @@ class DetailViewModel @Inject constructor(private val detailRepository: DetailRe
                     .resultToViewState()
                     .replay(1)
                     .autoConnect(1) { disposable = it }
+
+                viewEffects = result
+                    .resultToEffect()
             }
     }
 
     fun processInput(it: DetailViewEvent) {
         eventEmitter.onNext(it)
+    }
+
+    private fun Observable<Lce<out DetailViewResult>>.resultToEffect() : Observable<DetailViewEffect> {
+        return filter { it is Lce.Content && it.packet is OpenChromeResult }
+            .map<DetailViewEffect> {
+                when(it){
+                    is Lce.Content -> {
+                        when(it.packet) {
+                            is OpenChromeResult -> {
+                                OpenChromeEffect(it.packet.uri)
+                            }
+                            else -> {
+                                OpenChromeEffect("")
+                            }
+                        }
+
+                    }
+
+                    else -> {
+                        OpenChromeEffect("")
+                    }
+                }
+            }
     }
 
     private fun Observable<Lce<out DetailViewResult>>.resultToViewState() : Observable<DetailViewState> {
@@ -48,8 +76,11 @@ class DetailViewModel @Inject constructor(private val detailRepository: DetailRe
                                 coverPhoto = details.coverImage,
                                 author = details.author,
                                 link = details.articleLink,
-                                published = details.articleLink
+                                published = details.publishedOn
                             )
+                        }
+                        is OpenChromeResult -> {
+                            vs.copy(isLoading = false)
                         }
                     }
                 }
@@ -57,6 +88,9 @@ class DetailViewModel @Inject constructor(private val detailRepository: DetailRe
                     when(result.packet) {
                         is LoadDetailResult -> {
                             vs.copy(isLoading = false, error = result.packet.error)
+                        }
+                        is OpenChromeResult -> {
+                            vs.copy(isLoading = false)
                         }
                     }
                 }
@@ -69,13 +103,25 @@ class DetailViewModel @Inject constructor(private val detailRepository: DetailRe
 
     private fun Observable<DetailViewEvent>.eventToResult() : Observable<Lce<out DetailViewResult>> {
         return publish {
-            it.ofType(LoadDetailEvent::class.java).onLoadDetails()
+            Observable.merge(
+                it.ofType(LoadDetailEvent::class.java).onLoadDetails(),
+                it.ofType(OpenChromeEvent::class.java).onOpenLink()
+            )
         }
+    }
+
+    private fun Observable<OpenChromeEvent>.onOpenLink() : Observable<Lce<out DetailViewResult>> {
+        return map {Lce.Content(OpenChromeResult(it.uri))}
     }
 
     private fun Observable<LoadDetailEvent>.onLoadDetails() : Observable<Lce<out DetailViewResult>> {
         return switchMap {
             detailRepository.getDetails(it.newsId, it.newsType)
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        disposable.dispose()
     }
 }

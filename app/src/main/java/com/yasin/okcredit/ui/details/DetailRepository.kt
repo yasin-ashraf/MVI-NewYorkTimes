@@ -20,7 +20,15 @@ class DetailRepository @Inject constructor(private val localRepository: LocalRep
                     .map {
                         if(it.id == id){
                             Lce.Content(DetailViewResult.LoadDetailResult(
-                                GeneralNews(it.title,it.author,it.thumbnail,it.abstract,it.coverImage,it.articleLink)
+                                GeneralNews(
+                                    title = it.title,
+                                    author = it.author,
+                                    thumbnail = it.thumbnail,
+                                    abstract = it.abstract,
+                                    coverImage = it.coverImage,
+                                    articleLink = it.articleLink,
+                                    publishedOn = it.publishedDate
+                                )
                             ))
                         }else {
                             Lce.Error(DetailViewResult.LoadDetailResult(
@@ -36,7 +44,15 @@ class DetailRepository @Inject constructor(private val localRepository: LocalRep
                     .map {
                         if(it.id == id){
                             Lce.Content(DetailViewResult.LoadDetailResult(
-                                GeneralNews(it.title,it.author,it.thumbnail,it.abstract,it.coverImage,it.articleLink)
+                                GeneralNews(
+                                    title = it.title,
+                                    author = it.author,
+                                    thumbnail = it.thumbnail,
+                                    abstract = it.abstract,
+                                    coverImage = it.coverImage,
+                                    articleLink = it.articleLink,
+                                    publishedOn = it.publishedDate
+                                )
                             ))
                         }else {
                             Lce.Error(DetailViewResult.LoadDetailResult(

@@ -9,5 +9,6 @@ data class GeneralNews(
     var thumbnail : String? = "",
     var abstract : String? = "",
     var coverImage : String? = "",
-    var articleLink : String? = ""
+    var articleLink : String? = "",
+    var publishedOn : String? = ""
 )

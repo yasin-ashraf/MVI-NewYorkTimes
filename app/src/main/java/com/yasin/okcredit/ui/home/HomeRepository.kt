@@ -43,7 +43,8 @@ class HomeRepository @Inject constructor(
                             abstract = it.abstract,
                             coverImage = getCoverImage(it),
                             articleLink = it.url,
-                            thumbnail = getThumbnail(it))
+                            thumbnail = getThumbnail(it),
+                            publishedDate = it.publishedDate)
                         newsArray.add(homeNews)
                     }
                     localRepository.insertHomeNewsItem(newsArray.toTypedArray())

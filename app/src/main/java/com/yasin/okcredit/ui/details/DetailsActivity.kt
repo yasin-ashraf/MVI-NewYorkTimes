@@ -5,18 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
-import com.yasin.okcredit.NEWS_ID
-import com.yasin.okcredit.NEWS_TYPE
-import com.yasin.okcredit.OkCredit
-import com.yasin.okcredit.R
+import com.yasin.okcredit.*
 import com.yasin.okcredit.dagger.modules.ViewModelFactory
+import com.yasin.okcredit.ui.details.DetailViewEffect.*
 import com.yasin.okcredit.ui.details.DetailViewEvent.*
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_details.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -28,8 +29,9 @@ class DetailsActivity : AppCompatActivity() {
 
     @Inject lateinit var viewModelFactory: ViewModelFactory
     private lateinit var detailViewModel : DetailViewModel
-    private lateinit var disposable: Disposable
-    private lateinit var uiDisposable : Disposable
+    private val disposable: CompositeDisposable by lazy { CompositeDisposable() }
+    private lateinit var uiDisposable: Disposable
+    private val openLinkEvent : PublishSubject<String> = PublishSubject.create()
 
     companion object {
         fun getNewIntent(id: String, context: Context, type: String) : Intent{
@@ -46,7 +48,8 @@ class DetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_details)
         applyWindowInsets()
         configureViewModel()
-        attachViewStateObserver()
+        init()
+        attachStateObserver()
     }
 
     private fun applyWindowInsets() {
@@ -73,8 +76,13 @@ class DetailsActivity : AppCompatActivity() {
             intent.getStringExtra(NEWS_ID),
             intent.getStringExtra(NEWS_TYPE)
         ))
+        val openLinkEvent : Observable<OpenChromeEvent> = openLinkEvent
+            .map { OpenChromeEvent(it) }
         uiDisposable =
-            loadDetailEvent.subscribe({
+            Observable.merge (
+                openLinkEvent,
+                loadDetailEvent
+            ).subscribe({
                 detailViewModel.processInput(it)
             }, {
                 Timber.e(it, "error processing input")
@@ -85,14 +93,36 @@ class DetailsActivity : AppCompatActivity() {
         detailViewModel = ViewModelProvider(this, viewModelFactory).get(DetailViewModel::class.java)
     }
 
-    private fun attachViewStateObserver() {
-        disposable = detailViewModel.viewState
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                renderViewState(it)
-            }, {
-                error("Something terribly wrong happened when set view state")
-            })
+    private fun attachStateObserver() {
+        disposable.add(
+            detailViewModel.viewState
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    renderViewState(it)
+                }, {
+                    error("Something terribly wrong happened when set view state")
+                })
+        )
+        disposable.add(
+            detailViewModel.viewEffects
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    trigger(it)
+                }, {
+                    error("Something terribly wrong happened when set view state")
+                })
+        )
+    }
+
+    private fun trigger(effect: DetailViewEffect?) {
+        effect ?: return
+        when(effect) {
+            is OpenChromeEffect -> {
+                openChrome(effect.uri) {
+                    Toast.makeText(this, "error opening Browser!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     private fun renderViewState(it: DetailViewState?) {
@@ -109,11 +139,18 @@ class DetailsActivity : AppCompatActivity() {
         tv_abstract.text = it?.abstract
         author.text = it?.author
         tv_link.text = it?.link
+        published.text = String.format("Published on",it?.dateToFormat(it.published ?: ""))
     }
 
-    override fun onDestroy()  {
-        super.onDestroy()
+    private fun init() {
+        tv_link.setOnClickListener {
+            openLinkEvent.onNext(tv_link.text.toString())
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        uiDisposable.dispose()
         disposable.dispose()
     }
-
 }
