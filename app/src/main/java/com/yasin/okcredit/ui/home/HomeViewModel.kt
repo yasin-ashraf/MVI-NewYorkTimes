@@ -6,7 +6,6 @@ import com.yasin.okcredit.ui.home.HomeViewEvent.ScreenLoadEvent
 import com.yasin.okcredit.ui.home.HomeViewResult.ScreenLoadResult
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
@@ -48,7 +47,7 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
                 is Lce.Content -> {
                     when (result.packet) {
                         is ScreenLoadResult -> {
-                            vs.copy(isLoading = false, isEmpty = false,adapterList = result.packet.list)
+                            vs.copy(isLoading = false, isEmpty = false,adapterList = result.packet.list, error = "")
                         }
                         else -> {
                             error("invalid event result!!")
@@ -57,7 +56,7 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
                 }
 
                 is Lce.Loading -> {
-                    vs.copy(isLoading = true)
+                    vs.copy(isLoading = true, error = "")
                 }
 
                 is Lce.Error -> {
@@ -82,20 +81,11 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
     private fun Observable<ScreenLoadEvent>.onScreenLoad(): Observable<Lce<out HomeViewResult>> {
         return switchMap {
             homeRepository.getHomeNews()
-                .subscribeOn(Schedulers.io())
-                .map {
-                    if (it.isEmpty()) {
-                        Lce.Error(ScreenLoadResult(it,"empty news.."))
-                    } else {
-                        Lce.Content(ScreenLoadResult(it))
-                    }
-                }.startWith(Lce.Loading())
         }
     }
 
     override fun onCleared() {
         super.onCleared()
-        homeRepository.onCleared()
         disposable.dispose()
     }
 }

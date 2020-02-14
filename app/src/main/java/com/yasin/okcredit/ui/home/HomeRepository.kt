@@ -1,16 +1,18 @@
 package com.yasin.okcredit.ui.home
 
 import com.yasin.okcredit.COVER_PHOTO
+import com.yasin.okcredit.FETCH_TIME_OUT
 import com.yasin.okcredit.THUMBNAIL
+import com.yasin.okcredit.data.SessionManager
 import com.yasin.okcredit.data.dataModels.ResultsItem
 import com.yasin.okcredit.data.entity.HomeNews
 import com.yasin.okcredit.data.repository.LocalRepository
 import com.yasin.okcredit.data.repository.RemoteRepository
-import io.reactivex.Flowable
+import com.yasin.okcredit.network.Lce
+import com.yasin.okcredit.ui.home.HomeViewResult.ScreenLoadResult
 import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -18,42 +20,58 @@ import javax.inject.Inject
  */
 class HomeRepository @Inject constructor(
     private val localRepository: LocalRepository,
-    private val remoteRepository: RemoteRepository
+    private val remoteRepository: RemoteRepository,
+    private val sessionManager: SessionManager
 ) {
 
-    private lateinit var disposable: Disposable
-
-    fun getHomeNews(): Observable<List<HomeNews>> {
-        refreshProducts() //todo : return loading state from here
-        return localRepository.getHomeNews()
-    }
-
-    private fun refreshProducts() {
-        disposable = remoteRepository.fetchHomeNews()
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
-            .subscribe({ response ->
-                if(response?.results?.isNullOrEmpty() == false){
-                    val newsArray = mutableListOf<HomeNews>()
-                    response.results.forEach {
-                        val homeNews = HomeNews(
-                            id = it.createdDate,
-                            title = it.title,
-                            author = it.byline,
-                            abstract = it.abstract,
-                            coverImage = getCoverImage(it),
-                            articleLink = it.url,
-                            thumbnail = getThumbnail(it),
-                            publishedDate = it.publishedDate)
-                        newsArray.add(homeNews)
+    fun getHomeNews(): Observable<Lce<ScreenLoadResult>>? {
+        if(!shouldFetch()){
+            return localRepository.getHomeNews()
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map {
+                    if(it.isNullOrEmpty()){
+                        Lce.Error(ScreenLoadResult(it, "empty list"))
+                    }else {
+                        Lce.Content(ScreenLoadResult(it))
                     }
-                    localRepository.insertHomeNewsItem(newsArray.toTypedArray())
-                }
-            },
-                {
-                    Timber.e(it, "Error refresh Home News")
-                })
+                }.startWith(Lce.Loading())
+        }else {
+            return remoteRepository.fetchHomeNews()
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map {
+                    if(it.results?.isNullOrEmpty() == false){
+                        val newsArray = mutableListOf<HomeNews>()
+                        it.results.forEach { item ->
+                            val homeNews = HomeNews(
+                                id = item.createdDate,
+                                title = item.title,
+                                author = item.byline,
+                                abstract = item.abstract,
+                                coverImage = getCoverImage(item),
+                                articleLink = item.url,
+                                thumbnail = getThumbnail(item),
+                                publishedDate = item.publishedDate)
+                            newsArray.add(homeNews)
+                        }
+                        localRepository.insertHomeNewsItem(newsArray.toTypedArray())
+                        sessionManager.lastFetchTime = Calendar.getInstance().timeInMillis
+                    }
+                }.flatMapObservable {
+                    localRepository.getHomeNews()
+                }.map {
+                    if(it.isNullOrEmpty()){
+                        Lce.Error(ScreenLoadResult(it, "empty list"))
+                    }else {
+                        Lce.Content(ScreenLoadResult(it))
+                    }
+                }.onErrorReturn {
+                    Lce.Error(ScreenLoadResult(emptyList(),error = it.localizedMessage))
+                }.startWith(Lce.Loading())
+        }
     }
+
 
     private fun getThumbnail(it: ResultsItem): String {
         if (it.multimedia.isNullOrEmpty()) return ""
@@ -70,8 +88,7 @@ class HomeRepository @Inject constructor(
         }?.url ?: ""
     }
 
-    fun onCleared() {
-        if(::disposable.isInitialized)
-            disposable.dispose()
+    private fun shouldFetch() : Boolean{
+        return (Calendar.getInstance().timeInMillis - ( sessionManager.lastFetchTime ?: 0L ) > FETCH_TIME_OUT)
     }
 }

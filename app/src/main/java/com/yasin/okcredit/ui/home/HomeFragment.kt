@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -95,12 +96,16 @@ class HomeFragment : Fragment() {
 
     private fun renderViewState(it: HomeViewState?) {
         swipe_refresh_home.isRefreshing = it?.isLoading ?: false
-        if(it?.isEmpty == true){
+        if(it?.isEmpty == true){ // news is empty only when sth is wrong
+            rv_home.visibility = View.INVISIBLE
             empty_view.visibility = View.VISIBLE
         }else{
             empty_view.visibility = View.GONE
             rv_home.visibility = View.VISIBLE
             newsAdapter.submitList(it?.adapterList)
+        }
+        it?.error.let {
+            if(!it.isNullOrEmpty()) Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
         }
     }
 

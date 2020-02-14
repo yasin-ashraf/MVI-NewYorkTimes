@@ -19,5 +19,6 @@ const val MOVIES_NEWS = "movies"
 const val SPORTS_NEWS = "sports"
 
 //Local Repository
+const val FETCH_TIME_OUT  = 1*60*1000
 const val GET_ALL_HOME_NEWS_QUERY = "SELECT * FROM HomeNews"
 const val GET_HOME_NEWS_DETAILS_QUERY = "SELECT * FROM HomeNews WHERE :id = id"
