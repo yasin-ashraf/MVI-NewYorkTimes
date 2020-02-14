@@ -146,6 +146,9 @@ class DetailsActivity : AppCompatActivity() {
         tv_link.setOnClickListener {
             openLinkEvent.onNext(tv_link.text.toString())
         }
+        back_button.setOnClickListener {
+            finish()
+        }
     }
 
     override fun onPause() {

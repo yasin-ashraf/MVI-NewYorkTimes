@@ -28,7 +28,7 @@
             android:src="@drawable/ic_arrow_back"
             android:tint="@color/white"
             android:padding="10dp"
-
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintTop_toTopOf="parent"/>
 

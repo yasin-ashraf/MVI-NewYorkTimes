@@ -13,7 +13,7 @@ data class HomeNews(
     var title : String? = "",
     var author : String? = "",
     var thumbnail : String? = "",
-    var abstract : String? = "",
+    var abstractSt : String? = "",
     var coverImage : String? = "",
     var articleLink : String? = "",
     var publishedDate : String? = ""

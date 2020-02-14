@@ -24,7 +24,7 @@ class DetailRepository @Inject constructor(private val localRepository: LocalRep
                                     title = it.title,
                                     author = it.author,
                                     thumbnail = it.thumbnail,
-                                    abstract = it.abstract,
+                                    abstract = it.abstractSt,
                                     coverImage = it.coverImage,
                                     articleLink = it.articleLink,
                                     publishedOn = it.publishedDate
@@ -48,7 +48,7 @@ class DetailRepository @Inject constructor(private val localRepository: LocalRep
                                     title = it.title,
                                     author = it.author,
                                     thumbnail = it.thumbnail,
-                                    abstract = it.abstract,
+                                    abstract = it.abstractSt,
                                     coverImage = it.coverImage,
                                     articleLink = it.articleLink,
                                     publishedOn = it.publishedDate

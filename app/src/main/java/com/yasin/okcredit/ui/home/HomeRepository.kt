@@ -48,7 +48,7 @@ class HomeRepository @Inject constructor(
                                 id = item.createdDate,
                                 title = item.title,
                                 author = item.byline,
-                                abstract = item.abstract,
+                                abstractSt = item.abstract,
                                 coverImage = getCoverImage(item),
                                 articleLink = item.url,
                                 thumbnail = getThumbnail(item),
