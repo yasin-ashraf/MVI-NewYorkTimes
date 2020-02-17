@@ -28,13 +28,12 @@ import javax.inject.Inject
  */
 class ScienceFragment : Fragment() {
 
-    @Inject
-    lateinit var viewmodelFactory: ViewModelFactory
+    @Inject lateinit var viewmodelFactory: ViewModelFactory
     private lateinit var scienceViewModel: ScienceViewModel
     private lateinit var uiDisposable : Disposable
     private lateinit var disposable: Disposable
     private val newsAdapter : NewsAdapter by lazy { NewsAdapter(requireContext(), SCIENCE_NEWS) }
-    private val swipeRefesh : PublishSubject<NewsViewEvent.ScreenLoadEvent> = PublishSubject.create()
+    private val swipeRefresh : PublishSubject<NewsViewEvent.ScreenLoadEvent> = PublishSubject.create()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         OkCredit.getApp(requireContext()).mainComponent.injectScience(this)
@@ -86,7 +85,7 @@ class ScienceFragment : Fragment() {
     private fun init() {
         rv_science.adapter = newsAdapter
         swipe_refresh_science.setOnRefreshListener(onRefreshListener)
-        val screenLoadEvent : Observable<NewsViewEvent.ScreenLoadEvent> = swipeRefesh
+        val screenLoadEvent : Observable<NewsViewEvent.ScreenLoadEvent> = swipeRefresh
         uiDisposable = screenLoadEvent.subscribe(
             {
                 scienceViewModel.processInput(it)
@@ -94,7 +93,7 @@ class ScienceFragment : Fragment() {
                 Timber.e(it, "error processing input")
             }
         )
-        swipeRefesh.onNext(NewsViewEvent.ScreenLoadEvent) // first time
+        swipeRefresh.onNext(NewsViewEvent.ScreenLoadEvent) // first time
     }
 
     private fun renderViewState(it: NewsViewState?) {
@@ -113,7 +112,7 @@ class ScienceFragment : Fragment() {
     }
 
     private val onRefreshListener = SwipeRefreshLayout.OnRefreshListener {
-        swipeRefesh.onNext(NewsViewEvent.ScreenLoadEvent)
+        swipeRefresh.onNext(NewsViewEvent.ScreenLoadEvent)
     }
 
     override fun onDestroyView() {

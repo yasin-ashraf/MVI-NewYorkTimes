@@ -6,6 +6,7 @@ import com.yasin.okcredit.ui.details.DetailViewModel
 import com.yasin.okcredit.ui.home.HomeViewModel
 import com.yasin.okcredit.ui.movies.MovieViewModel
 import com.yasin.okcredit.ui.science.ScienceViewModel
+import com.yasin.okcredit.ui.sports.SportsViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -37,6 +38,11 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(ScienceViewModel::class)
-    abstract fun bindScienceViewModel(movieViewModel: ScienceViewModel) : ViewModel
+    abstract fun bindScienceViewModel(scienceViewModel: ScienceViewModel) : ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SportsViewModel::class)
+    abstract fun bindSportsViewModel(sportsViewModel: SportsViewModel) : ViewModel
 
 }

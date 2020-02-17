@@ -9,6 +9,7 @@ import com.yasin.okcredit.ui.details.DetailsActivity
 import com.yasin.okcredit.ui.home.HomeFragment
 import com.yasin.okcredit.ui.movies.MoviesFragment
 import com.yasin.okcredit.ui.science.ScienceFragment
+import com.yasin.okcredit.ui.sports.SportsFragment
 import dagger.Component
 
 /**
@@ -21,6 +22,7 @@ interface MainComponent {
     fun injectDetails(detailsActivity: DetailsActivity)
     fun injectMovies(moviesFragment: MoviesFragment)
     fun injectScience(scienceFragment: ScienceFragment)
+    fun injectSports(sportsFragment: SportsFragment)
 
 
 }

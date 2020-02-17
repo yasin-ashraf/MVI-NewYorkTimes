@@ -1,8 +1,8 @@
-package com.yasin.okcredit.ui.science
+package com.yasin.okcredit.ui.sports
 
 import com.yasin.okcredit.COVER_PHOTO
 import com.yasin.okcredit.FETCH_TIME_OUT
-import com.yasin.okcredit.SCIENCE_NEWS
+import com.yasin.okcredit.SPORTS_NEWS
 import com.yasin.okcredit.THUMBNAIL
 import com.yasin.okcredit.data.SessionManager
 import com.yasin.okcredit.data.dataModels.ResultsItem
@@ -19,13 +19,13 @@ import javax.inject.Inject
 /**
  * Created by Yasin on 17/2/20.
  */
-class ScienceRepository @Inject constructor(private val localRepository: LocalRepository,
-                                            private val remoteRepository: RemoteRepository,
-                                            private val sessionManager: SessionManager) {
+class SportsRepository @Inject constructor(private val localRepository: LocalRepository,
+                                           private val remoteRepository: RemoteRepository,
+                                           private val sessionManager: SessionManager) {
 
     fun getScienceNews(): Observable<Lce<NewsViewResult.ScreenLoadResult>>? {
         if(!shouldFetch()){
-            return localRepository.getScienceNews()
+            return localRepository.getSportsNews()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map {
@@ -36,7 +36,7 @@ class ScienceRepository @Inject constructor(private val localRepository: LocalRe
                     }
                 }.startWith(Lce.Loading())
         }else {
-            return remoteRepository.fetchScienceNews()
+            return remoteRepository.fetchSportsNews()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map {
@@ -52,14 +52,14 @@ class ScienceRepository @Inject constructor(private val localRepository: LocalRe
                                 articleLink = item.url,
                                 thumbnail = getThumbnail(item),
                                 publishedDate = item.publishedDate,
-                                newsType = SCIENCE_NEWS)
+                                newsType = SPORTS_NEWS)
                             newsArray.add(homeNews)
                         }
                         localRepository.insertNewsItem(newsArray.toTypedArray())
-                        sessionManager.lastFetchTimeScienceNews = Calendar.getInstance().timeInMillis
+                        sessionManager.lastFetchTimeSportsNews = Calendar.getInstance().timeInMillis
                     }
                 }.flatMapObservable {
-                    localRepository.getScienceNews()
+                    localRepository.getSportsNews()
                 }.map {
                     if(it.isNullOrEmpty()){
                         Lce.Error(NewsViewResult.ScreenLoadResult(it, "empty list"))
@@ -94,7 +94,6 @@ class ScienceRepository @Inject constructor(private val localRepository: LocalRe
     }
 
     private fun shouldFetch() : Boolean{
-        return (Calendar.getInstance().timeInMillis - ( sessionManager.lastFetchTimeScienceNews ?: 0L ) > FETCH_TIME_OUT)
+        return (Calendar.getInstance().timeInMillis - ( sessionManager.lastFetchTimeSportsNews ?: 0L ) > FETCH_TIME_OUT)
     }
-
 }
