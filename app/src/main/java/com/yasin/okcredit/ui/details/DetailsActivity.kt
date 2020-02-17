@@ -11,8 +11,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
 import com.yasin.okcredit.*
 import com.yasin.okcredit.dagger.modules.ViewModelFactory
-import com.yasin.okcredit.ui.details.DetailViewEffect.*
-import com.yasin.okcredit.ui.details.DetailViewEvent.*
+import com.yasin.okcredit.viewState.DetailViewEffect
+import com.yasin.okcredit.viewState.DetailViewEffect.*
+import com.yasin.okcredit.viewState.DetailViewEvent.*
+import com.yasin.okcredit.viewState.DetailViewState
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

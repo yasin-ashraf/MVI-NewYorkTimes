@@ -2,14 +2,15 @@ package com.yasin.okcredit.ui.movies
 
 import com.yasin.okcredit.COVER_PHOTO
 import com.yasin.okcredit.FETCH_TIME_OUT
+import com.yasin.okcredit.MOVIES_NEWS
 import com.yasin.okcredit.THUMBNAIL
 import com.yasin.okcredit.data.SessionManager
 import com.yasin.okcredit.data.dataModels.ResultsItem
-import com.yasin.okcredit.data.entity.MovieNews
+import com.yasin.okcredit.data.entity.News
 import com.yasin.okcredit.data.repository.LocalRepository
 import com.yasin.okcredit.data.repository.RemoteRepository
 import com.yasin.okcredit.network.Lce
-import com.yasin.okcredit.ui.home.HomeViewResult
+import com.yasin.okcredit.viewState.NewsViewResult.ScreenLoadResult
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
@@ -22,16 +23,16 @@ class MoviesRepository @Inject constructor(private val localRepository: LocalRep
                                            private val remoteRepository: RemoteRepository,
                                            private val sessionManager: SessionManager){
 
-    fun getMovieNews(): Observable<Lce<MoviesViewResult.ScreenLoadResult>>? {
+    fun getMovieNews(): Observable<Lce<ScreenLoadResult>>? {
         if(!shouldFetch()){
             return localRepository.getMovieNews()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map {
                     if(it.isNullOrEmpty()){
-                        Lce.Error(MoviesViewResult.ScreenLoadResult(it, "empty list"))
+                        Lce.Error(ScreenLoadResult(it, "empty list"))
                     }else {
-                        Lce.Content(MoviesViewResult.ScreenLoadResult(it))
+                        Lce.Content(ScreenLoadResult(it))
                     }
                 }.startWith(Lce.Loading())
         }else {
@@ -40,9 +41,9 @@ class MoviesRepository @Inject constructor(private val localRepository: LocalRep
                 .observeOn(Schedulers.io())
                 .map {
                     if(it.results?.isNullOrEmpty() == false){
-                        val newsArray = mutableListOf<MovieNews>()
+                        val newsArray = mutableListOf<News>()
                         it.results.forEach { item ->
-                            val homeNews = MovieNews(
+                            val homeNews = News(
                                 id = item.createdDate,
                                 title = item.title,
                                 author = item.byline,
@@ -50,23 +51,24 @@ class MoviesRepository @Inject constructor(private val localRepository: LocalRep
                                 coverImage = getCoverImage(item),
                                 articleLink = item.url,
                                 thumbnail = getThumbnail(item),
-                                publishedDate = item.publishedDate)
+                                publishedDate = item.publishedDate,
+                                newsType = MOVIES_NEWS)
                             newsArray.add(homeNews)
                         }
-                        localRepository.insertMovieNewsItem(newsArray.toTypedArray())
+                        localRepository.insertNewsItem(newsArray.toTypedArray())
                         sessionManager.lastFetchTimeMovieNews = Calendar.getInstance().timeInMillis
                     }
                 }.flatMapObservable {
                     localRepository.getMovieNews()
                 }.map {
                     if(it.isNullOrEmpty()){
-                        Lce.Error(MoviesViewResult.ScreenLoadResult(it, "empty list"))
+                        Lce.Error(ScreenLoadResult(it, "empty list"))
                     }else {
-                        Lce.Content(MoviesViewResult.ScreenLoadResult(it))
+                        Lce.Content(ScreenLoadResult(it))
                     }
                 }.onErrorReturn {
                     Lce.Error(
-                        MoviesViewResult.ScreenLoadResult(
+                        ScreenLoadResult(
                             emptyList(),
                             error = it.localizedMessage
                         )

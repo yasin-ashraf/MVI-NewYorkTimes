@@ -2,8 +2,11 @@ package com.yasin.okcredit.ui.home
 
 import androidx.lifecycle.ViewModel
 import com.yasin.okcredit.network.Lce
-import com.yasin.okcredit.ui.home.HomeViewEvent.ScreenLoadEvent
-import com.yasin.okcredit.ui.home.HomeViewResult.ScreenLoadResult
+import com.yasin.okcredit.viewState.NewsViewEvent
+import com.yasin.okcredit.viewState.NewsViewEvent.ScreenLoadEvent
+import com.yasin.okcredit.viewState.NewsViewResult
+import com.yasin.okcredit.viewState.NewsViewResult.ScreenLoadResult
+import com.yasin.okcredit.viewState.NewsViewState
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
@@ -14,9 +17,9 @@ import javax.inject.Inject
  */
 class HomeViewModel @Inject constructor(private val homeRepository: HomeRepository) : ViewModel() {
 
-    private val eventEmitter: PublishSubject<HomeViewEvent> = PublishSubject.create()
+    private val eventEmitter: PublishSubject<NewsViewEvent> = PublishSubject.create()
     private lateinit var disposable: Disposable
-    val viewState: Observable<HomeViewState>
+    val viewState: Observable<NewsViewState>
 
     init {
         eventEmitter
@@ -31,18 +34,18 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
 
     }
 
-    fun processInput(homeViewEvent: HomeViewEvent?) {
+    fun processInput(homeViewEvent: NewsViewEvent?) {
         eventEmitter.onNext(homeViewEvent ?: ScreenLoadEvent)
     }
 
-    private fun Observable<HomeViewEvent>.eventToResult(): Observable<Lce<out HomeViewResult>> {
+    private fun Observable<NewsViewEvent>.eventToResult(): Observable<Lce<out NewsViewResult>> {
         return publish { o ->
             o.ofType(ScreenLoadEvent::class.java).onScreenLoad()
         }
     }
 
-    private fun Observable<Lce<out HomeViewResult>>.resultToViewState(): Observable<HomeViewState> {
-        return scan(HomeViewState()) { vs, result ->
+    private fun Observable<Lce<out NewsViewResult>>.resultToViewState(): Observable<NewsViewState> {
+        return scan(NewsViewState()) { vs, result ->
             when (result) {
                 is Lce.Content -> {
                     when (result.packet) {
@@ -78,7 +81,7 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
     }
 
 
-    private fun Observable<ScreenLoadEvent>.onScreenLoad(): Observable<Lce<out HomeViewResult>> {
+    private fun Observable<ScreenLoadEvent>.onScreenLoad(): Observable<Lce<out NewsViewResult>> {
         return switchMap {
             homeRepository.getHomeNews()
         }

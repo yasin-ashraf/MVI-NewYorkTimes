@@ -2,8 +2,11 @@ package com.yasin.okcredit.ui.movies
 
 import androidx.lifecycle.ViewModel
 import com.yasin.okcredit.network.Lce
-import com.yasin.okcredit.ui.movies.MoviesViewEvent.*
-import com.yasin.okcredit.ui.movies.MoviesViewResult.*
+import com.yasin.okcredit.viewState.NewsViewEvent
+import com.yasin.okcredit.viewState.NewsViewEvent.*
+import com.yasin.okcredit.viewState.NewsViewResult
+import com.yasin.okcredit.viewState.NewsViewResult.*
+import com.yasin.okcredit.viewState.NewsViewState
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
@@ -14,9 +17,9 @@ import javax.inject.Inject
  */
 class MovieViewModel @Inject constructor(private val moviesRepository: MoviesRepository) : ViewModel() {
 
-    private val eventEmitter: PublishSubject<MoviesViewEvent> = PublishSubject.create()
+    private val eventEmitter: PublishSubject<NewsViewEvent> = PublishSubject.create()
     private lateinit var disposable: Disposable
-    val viewState: Observable<MoviesViewState>
+    val viewState: Observable<NewsViewState>
 
     init {
         eventEmitter
@@ -31,18 +34,18 @@ class MovieViewModel @Inject constructor(private val moviesRepository: MoviesRep
 
     }
 
-    fun processInput(movieViewEvent: MoviesViewEvent?) {
+    fun processInput(movieViewEvent: NewsViewEvent?) {
         eventEmitter.onNext(movieViewEvent ?: ScreenLoadEvent)
     }
 
-    private fun Observable<MoviesViewEvent>.eventToResult(): Observable<Lce<out MoviesViewResult>> {
+    private fun Observable<NewsViewEvent>.eventToResult(): Observable<Lce<out NewsViewResult>> {
         return publish { o ->
             o.ofType(ScreenLoadEvent::class.java).onScreenLoad()
         }
     }
 
-    private fun Observable<Lce<out MoviesViewResult>>.resultToViewState(): Observable<MoviesViewState> {
-        return scan(MoviesViewState()) { vs, result ->
+    private fun Observable<Lce<out NewsViewResult>>.resultToViewState(): Observable<NewsViewState> {
+        return scan(NewsViewState()) { vs, result ->
             when (result) {
                 is Lce.Content -> {
                     when (result.packet) {
@@ -78,7 +81,7 @@ class MovieViewModel @Inject constructor(private val moviesRepository: MoviesRep
     }
 
 
-    private fun Observable<ScreenLoadEvent>.onScreenLoad(): Observable<Lce<out MoviesViewResult>> {
+    private fun Observable<ScreenLoadEvent>.onScreenLoad(): Observable<Lce<out NewsViewResult>> {
         return switchMap {
             moviesRepository.getMovieNews()
         }

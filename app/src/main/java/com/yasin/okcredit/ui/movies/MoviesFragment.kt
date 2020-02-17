@@ -12,7 +12,9 @@ import com.yasin.okcredit.MOVIES_NEWS
 import com.yasin.okcredit.OkCredit
 import com.yasin.okcredit.R
 import com.yasin.okcredit.dagger.modules.ViewModelFactory
-import com.yasin.okcredit.ui.movies.MoviesViewEvent.ScreenLoadEvent
+import com.yasin.okcredit.ui.adapter.NewsAdapter
+import com.yasin.okcredit.viewState.NewsViewEvent.ScreenLoadEvent
+import com.yasin.okcredit.viewState.NewsViewState
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -31,7 +33,7 @@ class MoviesFragment : Fragment() {
     private lateinit var movieViewModel: MovieViewModel
     private lateinit var uiDisposable : Disposable
     private lateinit var disposable: Disposable
-    private val newsAdapter : MoviesAdapter by lazy { MoviesAdapter(requireContext(), MOVIES_NEWS) }
+    private val newsAdapter : NewsAdapter by lazy { NewsAdapter(requireContext(), MOVIES_NEWS) }
     private val swipeRefesh : PublishSubject<ScreenLoadEvent> = PublishSubject.create()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,7 +97,7 @@ class MoviesFragment : Fragment() {
         swipeRefesh.onNext(ScreenLoadEvent) // first time
     }
 
-    private fun renderViewState(it: MoviesViewState?) {
+    private fun renderViewState(it: NewsViewState?) {
         swipe_refresh_movies.isRefreshing = it?.isLoading ?: false
         if(it?.isEmpty == true){ // news is empty only when sth is wrong
             rv_movies.visibility = View.INVISIBLE

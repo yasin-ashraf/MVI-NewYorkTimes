@@ -5,10 +5,7 @@ import androidx.room.Room
 import com.yasin.okcredit.DATABASE_NAME
 import com.yasin.okcredit.dagger.scope.ApplicationScope
 import com.yasin.okcredit.data.NewsDatabase
-import com.yasin.okcredit.data.dao.HomeNewsDao
-import com.yasin.okcredit.data.dao.MovieNewsDao
-import com.yasin.okcredit.data.dao.ScienceNewsDao
-import com.yasin.okcredit.data.dao.SportsNewsDao
+import com.yasin.okcredit.data.dao.NewsDao
 import dagger.Module
 import dagger.Provides
 
@@ -27,25 +24,7 @@ class DatabaseModule {
 
     @Provides
     @ApplicationScope
-    fun provideNewsDao(handzapDatabase: NewsDatabase) : HomeNewsDao {
+    fun provideNewsDao(handzapDatabase: NewsDatabase) : NewsDao {
         return handzapDatabase.homeNewsDao()
-    }
-
-    @Provides
-    @ApplicationScope
-    fun provideMovieNewsDao(handzapDatabase: NewsDatabase) : MovieNewsDao {
-        return handzapDatabase.moviesNewsDao()
-    }
-
-    @Provides
-    @ApplicationScope
-    fun provideScienceNewsDao(handzapDatabase: NewsDatabase) : ScienceNewsDao {
-        return handzapDatabase.scienceNewsDao()
-    }
-
-    @Provides
-    @ApplicationScope
-    fun provideSportsNewsDao(handzapDatabase: NewsDatabase) : SportsNewsDao {
-        return handzapDatabase.sportsNewsDao()
     }
 }

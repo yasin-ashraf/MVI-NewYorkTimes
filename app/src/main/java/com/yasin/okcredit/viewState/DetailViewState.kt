@@ -1,5 +1,6 @@
-package com.yasin.okcredit.ui.details
+package com.yasin.okcredit.viewState
 
+import com.yasin.okcredit.ui.details.GeneralNews
 import java.text.SimpleDateFormat
 import java.util.*
 

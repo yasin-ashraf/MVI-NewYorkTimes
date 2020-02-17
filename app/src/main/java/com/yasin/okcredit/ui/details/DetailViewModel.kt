@@ -2,9 +2,13 @@ package com.yasin.okcredit.ui.details
 
 import androidx.lifecycle.ViewModel
 import com.yasin.okcredit.network.Lce
-import com.yasin.okcredit.ui.details.DetailViewEffect.*
-import com.yasin.okcredit.ui.details.DetailViewEvent.*
-import com.yasin.okcredit.ui.details.DetailViewResult.*
+import com.yasin.okcredit.viewState.DetailViewEffect
+import com.yasin.okcredit.viewState.DetailViewEffect.*
+import com.yasin.okcredit.viewState.DetailViewEvent
+import com.yasin.okcredit.viewState.DetailViewEvent.*
+import com.yasin.okcredit.viewState.DetailViewResult
+import com.yasin.okcredit.viewState.DetailViewResult.*
+import com.yasin.okcredit.viewState.DetailViewState
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject

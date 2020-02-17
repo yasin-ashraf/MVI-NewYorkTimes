@@ -13,7 +13,8 @@ import com.yasin.okcredit.OkCredit
 import com.yasin.okcredit.R
 import com.yasin.okcredit.dagger.modules.ViewModelFactory
 import com.yasin.okcredit.ui.adapter.NewsAdapter
-import com.yasin.okcredit.ui.home.HomeViewEvent.*
+import com.yasin.okcredit.viewState.NewsViewEvent.ScreenLoadEvent
+import com.yasin.okcredit.viewState.NewsViewState
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -95,7 +96,7 @@ class HomeFragment : Fragment() {
         swipeRefesh.onNext(ScreenLoadEvent) // first time
     }
 
-    private fun renderViewState(it: HomeViewState?) {
+    private fun renderViewState(it: NewsViewState?) {
         swipe_refresh_home.isRefreshing = it?.isLoading ?: false
         if(it?.isEmpty == true){ // news is empty only when sth is wrong
             rv_home.visibility = View.INVISIBLE

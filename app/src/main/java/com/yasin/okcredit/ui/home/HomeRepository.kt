@@ -5,11 +5,11 @@ import com.yasin.okcredit.FETCH_TIME_OUT
 import com.yasin.okcredit.THUMBNAIL
 import com.yasin.okcredit.data.SessionManager
 import com.yasin.okcredit.data.dataModels.ResultsItem
-import com.yasin.okcredit.data.entity.HomeNews
+import com.yasin.okcredit.data.entity.News
 import com.yasin.okcredit.data.repository.LocalRepository
 import com.yasin.okcredit.data.repository.RemoteRepository
 import com.yasin.okcredit.network.Lce
-import com.yasin.okcredit.ui.home.HomeViewResult.ScreenLoadResult
+import com.yasin.okcredit.viewState.NewsViewResult.ScreenLoadResult
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
@@ -42,9 +42,9 @@ class HomeRepository @Inject constructor(
                 .observeOn(Schedulers.io())
                 .map {
                     if(it.results?.isNullOrEmpty() == false){
-                        val newsArray = mutableListOf<HomeNews>()
+                        val newsArray = mutableListOf<News>()
                         it.results.forEach { item ->
-                            val homeNews = HomeNews(
+                            val news = News(
                                 id = item.createdDate,
                                 title = item.title,
                                 author = item.byline,
@@ -53,9 +53,9 @@ class HomeRepository @Inject constructor(
                                 articleLink = item.url,
                                 thumbnail = getThumbnail(item),
                                 publishedDate = item.publishedDate)
-                            newsArray.add(homeNews)
+                            newsArray.add(news)
                         }
-                        localRepository.insertHomeNewsItem(newsArray.toTypedArray())
+                        localRepository.insertNewsItem(newsArray.toTypedArray())
                         sessionManager.lastFetchTimeHomeNews = Calendar.getInstance().timeInMillis
                     }
                 }.flatMapObservable {

@@ -4,9 +4,8 @@ import android.content.Context
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.squareup.picasso.Picasso
-import com.yasin.okcredit.HOME_NEWS
 import com.yasin.okcredit.R
-import com.yasin.okcredit.data.entity.HomeNews
+import com.yasin.okcredit.data.entity.News
 import com.yasin.okcredit.inflate
 import com.yasin.okcredit.ui.details.DetailsActivity
 import com.yasin.okcredit.utils.RoundedTransformation
@@ -16,7 +15,7 @@ import kotlinx.android.synthetic.main.list_item.view.*
  * Created by Yasin on 10/2/20.
  */
 class NewsAdapter(private val context: Context,
-                  private val newsType : String) : ListAdapter<HomeNews, NewsItemViewHolder>(NewsItemDiffCallBack()) {
+                  private val newsType : String) : ListAdapter<News, NewsItemViewHolder>(NewsItemDiffCallBack()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsItemViewHolder {
         return NewsItemViewHolder(parent.inflate(R.layout.list_item))
