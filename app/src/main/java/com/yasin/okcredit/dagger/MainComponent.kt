@@ -8,6 +8,7 @@ import com.yasin.okcredit.dagger.scope.ApplicationScope
 import com.yasin.okcredit.ui.details.DetailsActivity
 import com.yasin.okcredit.ui.home.HomeFragment
 import com.yasin.okcredit.ui.movies.MoviesFragment
+import com.yasin.okcredit.ui.science.ScienceFragment
 import dagger.Component
 
 /**
@@ -19,6 +20,7 @@ interface MainComponent {
     fun injectHome(homeFragment: HomeFragment)
     fun injectDetails(detailsActivity: DetailsActivity)
     fun injectMovies(moviesFragment: MoviesFragment)
+    fun injectScience(scienceFragment: ScienceFragment)
 
 
 }

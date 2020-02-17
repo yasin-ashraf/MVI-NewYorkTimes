@@ -20,4 +20,12 @@ class RemoteRepository @Inject constructor(private val newYorkTimesApi: NewYorkT
     fun fetchMovieNews() : Single<NewsResponse>{
         return newYorkTimesApi.fetchMovieNews(API_KEY)
     }
+
+    fun fetchScienceNews() : Single<NewsResponse>{
+        return newYorkTimesApi.fetchScienceNews(API_KEY)
+    }
+
+    fun fetchSportsNews() : Single<NewsResponse>{
+        return newYorkTimesApi.fetchSportsNews(API_KEY)
+    }
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.yasin.okcredit.ui.details.DetailViewModel
 import com.yasin.okcredit.ui.home.HomeViewModel
 import com.yasin.okcredit.ui.movies.MovieViewModel
+import com.yasin.okcredit.ui.science.ScienceViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -32,5 +33,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MovieViewModel::class)
     abstract fun bindMoviesViewModel(movieViewModel: MovieViewModel) : ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ScienceViewModel::class)
+    abstract fun bindScienceViewModel(movieViewModel: ScienceViewModel) : ViewModel
 
 }

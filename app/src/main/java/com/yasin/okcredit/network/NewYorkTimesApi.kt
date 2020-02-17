@@ -15,4 +15,10 @@ interface NewYorkTimesApi {
 
     @GET("movies.json")
     fun fetchMovieNews(@Query("api-key") apiKey : String) : Single<NewsResponse>
+
+    @GET("science.json")
+    fun fetchScienceNews(@Query("api-key") apiKey : String) : Single<NewsResponse>
+
+    @GET("sports.json")
+    fun fetchSportsNews(@Query("api-key") apiKey : String) : Single<NewsResponse>
 }

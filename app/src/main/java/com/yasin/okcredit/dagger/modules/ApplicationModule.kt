@@ -59,7 +59,7 @@ class ApplicationModule {
     @Provides
     @ApplicationScope
     fun provideLoggingInterceptor() : HttpLoggingInterceptor {
-        return HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC)
+        return HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
     }
 
     @Provides
