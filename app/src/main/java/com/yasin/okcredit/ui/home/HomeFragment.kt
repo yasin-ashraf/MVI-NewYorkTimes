@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.yasin.okcredit.HOME_NEWS
 import com.yasin.okcredit.OkCredit
 import com.yasin.okcredit.R
 import com.yasin.okcredit.dagger.modules.ViewModelFactory
@@ -30,7 +31,7 @@ class HomeFragment : Fragment() {
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var uiDisposable : Disposable
     private lateinit var disposable: Disposable
-    private val newsAdapter : NewsAdapter by lazy { NewsAdapter(requireContext()) }
+    private val newsAdapter : NewsAdapter by lazy { NewsAdapter(requireContext(), HOME_NEWS) }
     private val swipeRefesh : PublishSubject<ScreenLoadEvent> = PublishSubject.create()
 
     override fun onCreate(savedInstanceState: Bundle?) {

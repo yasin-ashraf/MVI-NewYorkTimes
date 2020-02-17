@@ -3,7 +3,6 @@ package com.yasin.okcredit.data
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import com.yasin.okcredit.dagger.qualifiers.ApplicationContext
 import com.yasin.okcredit.dagger.scope.ApplicationScope
 import javax.inject.Inject
 
@@ -22,16 +21,40 @@ class SessionManager @SuppressLint("CommitPrefEdits")
         editor = pref.edit()
     }
 
-    var lastFetchTime: Long?
-        get() = pref.getLong(LAST_FETCH_TIME, 0L)
+    var lastFetchTimeHomeNews: Long?
+        get() = pref.getLong(LAST_FETCH_TIME_HOME_NEWS, 0L)
         set(time) {
-            editor.putLong(LAST_FETCH_TIME, time ?: 0L)
+            editor.putLong(LAST_FETCH_TIME_HOME_NEWS, time ?: 0L)
+            editor.apply()
+        }
+
+    var lastFetchTimeMovieNews: Long?
+        get() = pref.getLong(LAST_FETCH_TIME_MOVIE_NEWS, 0L)
+        set(time) {
+            editor.putLong(LAST_FETCH_TIME_MOVIE_NEWS, time ?: 0L)
+            editor.apply()
+        }
+
+    var lastFetchTimeScienceNews: Long?
+        get() = pref.getLong(LAST_FETCH_TIME_SCIENCE_NEWS, 0L)
+        set(time) {
+            editor.putLong(LAST_FETCH_TIME_SCIENCE_NEWS, time ?: 0L)
+            editor.apply()
+        }
+
+    var lastFetchTimeSportsNews: Long?
+        get() = pref.getLong(LAST_FETCH_TIME_SPORTS_NEWS, 0L)
+        set(time) {
+            editor.putLong(LAST_FETCH_TIME_SPORTS_NEWS, time ?: 0L)
             editor.apply()
         }
 
 
     companion object {
         private const val PREF_NAME = "OkCreditYasinSession"
-        private const val LAST_FETCH_TIME = "lastFetchTime"
+        private const val LAST_FETCH_TIME_HOME_NEWS = "lastFetchTimeHome"
+        private const val LAST_FETCH_TIME_MOVIE_NEWS = "lastFetchTimeMovie"
+        private const val LAST_FETCH_TIME_SCIENCE_NEWS = "lastFetchTimeScience"
+        private const val LAST_FETCH_TIME_SPORTS_NEWS = "lastFetchTimeSports"
     }
 }

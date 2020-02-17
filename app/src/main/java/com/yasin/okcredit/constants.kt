@@ -21,4 +21,10 @@ const val SPORTS_NEWS = "sports"
 //Local Repository
 const val FETCH_TIME_OUT  = 1*60*1000
 const val GET_ALL_HOME_NEWS_QUERY = "SELECT * FROM HomeNews"
+const val GET_ALL_MOVIE_NEWS_QUERY = "SELECT * FROM MovieNews"
+const val GET_ALL_SCIENCE_NEWS_QUERY = "SELECT * FROM ScienceNews"
+const val GET_ALL_SPORTS_NEWS_QUERY = "SELECT * FROM SportsNews"
 const val GET_HOME_NEWS_DETAILS_QUERY = "SELECT * FROM HomeNews WHERE :id = id"
+const val GET_MOVIE_NEWS_DETAILS_QUERY = "SELECT * FROM MovieNews WHERE :id = id"
+const val GET_SCIENCE_NEWS_DETAILS_QUERY = "SELECT * FROM ScienceNews WHERE :id = id"
+const val GET_SPORTS_NEWS_DETAILS_QUERY = "SELECT * FROM SportsNews WHERE :id = id"

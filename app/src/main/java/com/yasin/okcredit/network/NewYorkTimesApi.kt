@@ -1,6 +1,6 @@
 package com.yasin.okcredit.network
 
-import com.yasin.okcredit.data.dataModels.HomeNewsResponse
+import com.yasin.okcredit.data.dataModels.NewsResponse
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -11,5 +11,8 @@ import retrofit2.http.Query
 interface NewYorkTimesApi {
 
     @GET("home.json")
-    fun fetchHomeNews(@Query("api-key") apiKey : String) : Single<HomeNewsResponse>
+    fun fetchHomeNews(@Query("api-key") apiKey : String) : Single<NewsResponse>
+
+    @GET("movies.json")
+    fun fetchMovieNews(@Query("api-key") apiKey : String) : Single<NewsResponse>
 }

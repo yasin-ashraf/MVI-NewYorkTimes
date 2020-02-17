@@ -16,7 +16,10 @@
             android:id="@+id/rv_home"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/list_item"
-            android:padding="5dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="20dp"
             android:clipToPadding="false"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

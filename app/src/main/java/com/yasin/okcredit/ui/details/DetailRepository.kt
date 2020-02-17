@@ -1,6 +1,7 @@
 package com.yasin.okcredit.ui.details
 
 import com.yasin.okcredit.HOME_NEWS
+import com.yasin.okcredit.MOVIES_NEWS
 import com.yasin.okcredit.data.repository.LocalRepository
 import com.yasin.okcredit.network.Lce
 import io.reactivex.Observable
@@ -36,6 +37,31 @@ class DetailRepository @Inject constructor(private val localRepository: LocalRep
                             ))
                         }
                     }.startWith(Lce.Loading())
+            }
+
+            MOVIES_NEWS -> {
+                localRepository.getMovieNewsDetails(id)
+                    .subscribeOn(Schedulers.io())
+                    .map {
+                        if(it.id == id){
+                            Lce.Content(DetailViewResult.LoadDetailResult(
+                                GeneralNews(
+                                    title = it.title,
+                                    author = it.author,
+                                    thumbnail = it.thumbnail,
+                                    abstract = it.abstractSt,
+                                    coverImage = it.coverImage,
+                                    articleLink = it.articleLink,
+                                    publishedOn = it.publishedDate
+                                )
+                            ))
+                        }else {
+                            Lce.Error(DetailViewResult.LoadDetailResult(
+                                GeneralNews(),error = "error !! Unable to fetch details."
+                            ))
+                        }
+                    }.startWith(Lce.Loading())
+
             }
 
             else -> {

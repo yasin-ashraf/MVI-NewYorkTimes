@@ -9,5 +9,12 @@ import androidx.room.PrimaryKey
 @Entity
 data class SportsNews(
     @PrimaryKey
-    val id : String
+    val id : String,
+    var title : String? = "",
+    var author : String? = "",
+    var thumbnail : String? = "",
+    var abstractSt : String? = "",
+    var coverImage : String? = "",
+    var articleLink : String? = "",
+    var publishedDate : String? = ""
 )

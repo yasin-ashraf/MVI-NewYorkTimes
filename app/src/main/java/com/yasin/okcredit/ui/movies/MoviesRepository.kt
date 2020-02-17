@@ -1,50 +1,48 @@
-package com.yasin.okcredit.ui.home
+package com.yasin.okcredit.ui.movies
 
 import com.yasin.okcredit.COVER_PHOTO
 import com.yasin.okcredit.FETCH_TIME_OUT
 import com.yasin.okcredit.THUMBNAIL
 import com.yasin.okcredit.data.SessionManager
 import com.yasin.okcredit.data.dataModels.ResultsItem
-import com.yasin.okcredit.data.entity.HomeNews
+import com.yasin.okcredit.data.entity.MovieNews
 import com.yasin.okcredit.data.repository.LocalRepository
 import com.yasin.okcredit.data.repository.RemoteRepository
 import com.yasin.okcredit.network.Lce
-import com.yasin.okcredit.ui.home.HomeViewResult.ScreenLoadResult
+import com.yasin.okcredit.ui.home.HomeViewResult
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 
 /**
- * Created by Yasin on 11/2/20.
+ * Created by Yasin on 17/2/20.
  */
-class HomeRepository @Inject constructor(
-    private val localRepository: LocalRepository,
-    private val remoteRepository: RemoteRepository,
-    private val sessionManager: SessionManager
-) {
+class MoviesRepository @Inject constructor(private val localRepository: LocalRepository,
+                                           private val remoteRepository: RemoteRepository,
+                                           private val sessionManager: SessionManager){
 
-    fun getHomeNews(): Observable<Lce<ScreenLoadResult>>? {
+    fun getMovieNews(): Observable<Lce<MoviesViewResult.ScreenLoadResult>>? {
         if(!shouldFetch()){
-            return localRepository.getHomeNews()
+            return localRepository.getMovieNews()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map {
                     if(it.isNullOrEmpty()){
-                        Lce.Error(ScreenLoadResult(it, "empty list"))
+                        Lce.Error(MoviesViewResult.ScreenLoadResult(it, "empty list"))
                     }else {
-                        Lce.Content(ScreenLoadResult(it))
+                        Lce.Content(MoviesViewResult.ScreenLoadResult(it))
                     }
                 }.startWith(Lce.Loading())
         }else {
-            return remoteRepository.fetchHomeNews()
+            return remoteRepository.fetchMovieNews()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map {
                     if(it.results?.isNullOrEmpty() == false){
-                        val newsArray = mutableListOf<HomeNews>()
+                        val newsArray = mutableListOf<MovieNews>()
                         it.results.forEach { item ->
-                            val homeNews = HomeNews(
+                            val homeNews = MovieNews(
                                 id = item.createdDate,
                                 title = item.title,
                                 author = item.byline,
@@ -55,19 +53,24 @@ class HomeRepository @Inject constructor(
                                 publishedDate = item.publishedDate)
                             newsArray.add(homeNews)
                         }
-                        localRepository.insertHomeNewsItem(newsArray.toTypedArray())
-                        sessionManager.lastFetchTimeHomeNews = Calendar.getInstance().timeInMillis
+                        localRepository.insertMovieNewsItem(newsArray.toTypedArray())
+                        sessionManager.lastFetchTimeMovieNews = Calendar.getInstance().timeInMillis
                     }
                 }.flatMapObservable {
-                    localRepository.getHomeNews()
+                    localRepository.getMovieNews()
                 }.map {
                     if(it.isNullOrEmpty()){
-                        Lce.Error(ScreenLoadResult(it, "empty list"))
+                        Lce.Error(MoviesViewResult.ScreenLoadResult(it, "empty list"))
                     }else {
-                        Lce.Content(ScreenLoadResult(it))
+                        Lce.Content(MoviesViewResult.ScreenLoadResult(it))
                     }
                 }.onErrorReturn {
-                    Lce.Error(ScreenLoadResult(emptyList(),error = it.localizedMessage))
+                    Lce.Error(
+                        MoviesViewResult.ScreenLoadResult(
+                            emptyList(),
+                            error = it.localizedMessage
+                        )
+                    )
                 }.startWith(Lce.Loading())
         }
     }
@@ -89,6 +92,7 @@ class HomeRepository @Inject constructor(
     }
 
     private fun shouldFetch() : Boolean{
-        return (Calendar.getInstance().timeInMillis - ( sessionManager.lastFetchTimeHomeNews ?: 0L ) > FETCH_TIME_OUT)
+        return (Calendar.getInstance().timeInMillis - ( sessionManager.lastFetchTimeMovieNews ?: 0L ) > FETCH_TIME_OUT)
     }
+
 }
